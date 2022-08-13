@@ -1,5 +1,5 @@
 <template>
-  <div id="main-page" class="page-container">
+  <div id="my-page" class="page-container">
     <Nav></Nav>
     <Header></Header>
     <PageTitle></PageTitle>
@@ -11,7 +11,7 @@ import Nav from "../components/Nav.vue";
 import Header from "../components/Header.vue";
 import PageTitle from "../components/PageTitle.vue";
 export default {
-  name: "MainPage",
+  name: "MyPage",
   components: {
     Nav,
     Header,
@@ -20,6 +20,6 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>
