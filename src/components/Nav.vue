@@ -1,23 +1,26 @@
 <template>
-  <div id="nav">
-    <div class="menu-nav">
-    </div>
-    <ul>
-      <li v-for="depth1 in menuTree">
-        <p @click="moveToPage(depth1.url)">{{depth1.label}}</p>
-        <ul v-if="depth1.sub.length > 0">
-          <li v-for="depth2 in depth1.sub">
-            <p @click="moveToPage(depth2.url)">{{depth2.label}}</p>
-            <ul v-if="depth2.sub.length > 0">
-              <li v-for="depth3 in depth2.sub">
-                <p @click="moveToPage(depth3.url)">{{depth3.label}}</p>
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </li>
-    </ul>
-  </div>
+    <b-sidebar id="sidebar-no-header" aria-labelledby="sidebar-no-header-title" visible no-header shadow>
+      <template #default="{ show }">
+        <div id="nav">
+          <b-nav vertical>
+            <b-nav-item v-for="depth1 in menuTree"
+                        @click="moveToPage(depth1.url)">
+              {{depth1.label}}
+              <b-nav-item v-if="depth1.sub.length > 0"
+                          v-for="depth2 in depth1.sub"
+                          @click="moveToPage(depth2.url)">
+                {{depth2.label}}
+                <b-nav-item v-if="depth2.sub.length > 0"
+                            v-for="depth3 in depth2.sub"
+                            @click="moveToPage(depth3.url)">
+                  {{depth3.label}}
+                </b-nav-item>
+              </b-nav-item>
+            </b-nav-item>
+          </b-nav>
+        </div>
+      </template>
+    </b-sidebar>
 </template>
 
 <script>
@@ -229,5 +232,6 @@ export default {
 
 <style>
 #nav {
+  padding-top: 50px;
 }
 </style>
