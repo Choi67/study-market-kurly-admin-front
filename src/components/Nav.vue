@@ -1,18 +1,18 @@
 <template>
     <b-sidebar id="sidebar-no-header" aria-labelledby="sidebar-no-header-title" visible no-header shadow>
-      <template>
+      <template #default="{ show }">
         <div id="nav">
           <b-nav vertical>
             <b-nav-item v-for="depth1 in menuTree"
-                        @click="moveToPage(depth1)">
+                        @click="moveToPage(depth1.url)">
               {{depth1.label}}
               <b-nav-item v-if="depth1.sub.length > 0"
                           v-for="depth2 in depth1.sub"
-                          @click="moveToPage(depth2)">
+                          @click="moveToPage(depth2.url)">
                 {{depth2.label}}
                 <b-nav-item v-if="depth2.sub.length > 0"
                             v-for="depth3 in depth2.sub"
-                            @click="moveToPage(depth3)">
+                            @click="moveToPage(depth3.url)">
                   {{depth3.label}}
                 </b-nav-item>
               </b-nav-item>
@@ -219,13 +219,10 @@ export default {
     }
   },
   methods: {
-    moveToPage(menu) {
-      if(menu.url != '' && menu.url != undefined){
+    moveToPage(pageName) {
+      if(pageName != '' && pageName != undefined){
         this.$router.push({
-          name: menu.url,
-          params:{
-              pageName : menu.label
-          }
+          name: pageName
         });
       }
     },

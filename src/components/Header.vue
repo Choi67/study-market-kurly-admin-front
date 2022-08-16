@@ -32,22 +32,5 @@ export default {
   align-items: center;
   box-shadow: 0 0 .3rem .2rem rgba(0,0,0,.15)!important;
   z-index: 1111;
-  padding: 0 16px;
-  box-sizing: border-box;
-}
-#header .header-title{
-  font-size: 24px;
-  font-weight: 700;
-  color: #fff;
-  padding: 0 10px;
-}
-#header .user-info{
-  display: flex;
-  flex-grow: 1;
-  flex-direction: row-reverse;
-}
-#header .user-info .user-name{
-  color: #fff;
-  font-size: 16px;
 }
 </style>

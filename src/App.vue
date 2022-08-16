@@ -29,13 +29,9 @@ img{
 ul, li{
   margin: 0;
   padding: 0;
-  list-style: none;
+  /*list-style: none;*/
 }
 .page-container{
   padding-top: 50px;
-}
-.page-contents{
-  padding: 0 30px 0 350px;
-  box-sizing: border-box;
 }
 </style>
