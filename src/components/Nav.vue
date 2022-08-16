@@ -1,26 +1,26 @@
 <template>
-    <b-sidebar id="sidebar-no-header" aria-labelledby="sidebar-no-header-title" visible no-header shadow>
-      <template #default="{ show }">
-        <div id="nav">
-          <b-nav vertical>
-            <b-nav-item v-for="depth1 in menuTree"
-                        @click="moveToPage(depth1.url)">
-              {{depth1.label}}
-              <b-nav-item v-if="depth1.sub.length > 0"
-                          v-for="depth2 in depth1.sub"
-                          @click="moveToPage(depth2.url)">
-                {{depth2.label}}
-                <b-nav-item v-if="depth2.sub.length > 0"
-                            v-for="depth3 in depth2.sub"
-                            @click="moveToPage(depth3.url)">
-                  {{depth3.label}}
-                </b-nav-item>
+  <b-sidebar id="sidebar-no-header" aria-labelledby="sidebar-no-header-title" visible no-header shadow>
+    <template>
+      <div id="nav">
+        <b-nav vertical>
+          <b-nav-item v-for="depth1 in menuTree"
+                      @click="moveToPage(depth1)">
+            {{depth1.label}}
+            <b-nav-item v-if="depth1.sub.length > 0"
+                        v-for="depth2 in depth1.sub"
+                        @click="moveToPage(depth2)">
+              {{depth2.label}}
+              <b-nav-item v-if="depth2.sub.length > 0"
+                          v-for="depth3 in depth2.sub"
+                          @click="moveToPage(depth3)">
+                {{depth3.label}}
               </b-nav-item>
             </b-nav-item>
-          </b-nav>
-        </div>
-      </template>
-    </b-sidebar>
+          </b-nav-item>
+        </b-nav>
+      </div>
+    </template>
+  </b-sidebar>
 </template>
 
 <script>
@@ -219,10 +219,13 @@ export default {
     }
   },
   methods: {
-    moveToPage(pageName) {
-      if(pageName != '' && pageName != undefined){
+    moveToPage(menu) {
+      if(menu.url != '' && menu.url != undefined){
         this.$router.push({
-          name: pageName
+          name: menu.url,
+          params:{
+            pageName : menu.label
+          }
         });
       }
     },
