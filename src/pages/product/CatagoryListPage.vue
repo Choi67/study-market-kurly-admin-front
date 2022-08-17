@@ -5,9 +5,16 @@
     <PageTitle></PageTitle>
     <div class="page-contents">
       <div class="btn-wrap">
-        <b-button>등록</b-button>
+        <b-button @click="goCategoryDetail">등록</b-button>
       </div>
-      <b-table hover :items="items"></b-table>
+      <b-table 
+        :items="items"
+        :select-mode="selectMode"
+        responsive="sm"
+        ref="selectableTable"
+        selectable
+        @row-selected="onRowSelected"
+      ></b-table>
     </div>
   </div>
 </template>
@@ -33,8 +40,34 @@ export default {
         { No: 5, 대분류: '베스트', 중분류: '' , 소분류:'', 이름:'', 설명:'',등록자:'sy.choi',등록일시:'20220815',사용여부:'Y'},
         { No: 6, 대분류: '알뜰쇼핑', 중분류: '' , 소분류:'', 이름:'', 설명:'',등록자:'sy.choi',등록일시:'20220815',사용여부:'Y'},
       ],
+      selectMode: 'single',
 
     }
+  },
+  methods: {
+      goCategoryDetail(items) {
+        this.$router.push({
+          name: "CatagoryDetailPage",
+          params:{
+            seq : items.seq,
+            pageName : "상품 카테고리 등록/수정"
+          }
+        });
+      },
+      selectAllRows() {
+        this.$refs.selectableTable.selectAllRows()
+      },
+      clearSelected() {
+        this.$refs.selectableTable.clearSelected()
+      },
+      selectThirdRow() {
+        // Rows are indexed from 0, so the third row is index 2
+        this.$refs.selectableTable.selectRow(2)
+      },
+      unselectThirdRow() {
+        // Rows are indexed from 0, so the third row is index 2
+        this.$refs.selectableTable.unselectRow(2)
+      }
   }
 }
 </script>
