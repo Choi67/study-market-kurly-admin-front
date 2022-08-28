@@ -22,10 +22,11 @@
         </b-form-group>
         <b-form-group class="input-group" id="input-group-3" label="・ 이벤트 유형" v-if="form.promotionType.includes('E')">
           <b-form-checkbox-group class="input-group" v-model="form.eventType" @change="rangeContents()" id="checkbox-1">
-            <b-form-checkbox value="G">랜딩형</b-form-checkbox>
+            <b-form-checkbox value="G">링크형</b-form-checkbox>
             <b-form-checkbox value="C">댓글형</b-form-checkbox>
             <b-form-checkbox value="P">쿠폰형</b-form-checkbox>
             <b-form-checkbox value="R">난수형</b-form-checkbox>
+            <b-form-checkbox value="T">룰렛형</b-form-checkbox>
           </b-form-checkbox-group>
         </b-form-group>
         <b-form-group id="input-group-4" label="・ 오퍼정보 업로드" label-for="file-offr-excel" v-if="form.eventType.includes('P')">
@@ -61,17 +62,35 @@
         <b-form-group id="input-group-7" label="・ 이벤트 내용" >
           <b-form-select width="50%" v-model="selectContent" :options="selectOptions"></b-form-select>
           <b-button @click="addEventContent">추가</b-button>
-          <b-form-group id="input-group-7-1" v-for="(idx,content) in form.contents" label="・ 이벤트 배너 이미지" label-for="file-content-image">
+        </b-form-group>
+        <div v-for="(item,idx) in form.contents" class="contents-list">
+          <h5>{{'Section '+(idx+1)}}</h5>
+          <b-form-group class="content-value" :id="'input-group-link-'+idx" label="링크 값" :label-for="'input-link'+idx" v-if="item.type == 'link'">
+            <b-form-input :id="'input-link'+idx" v-model="item.value" type="text" placeholder="링크" required></b-form-input>
+          </b-form-group>
+          <b-form-group class="content-value" :id="'input-group-coupon-'+idx" label="버튼 타입" :label-for="'input-coupon-'+idx" v-if="item.type == 'coupon'">
+            <b-form-input :id="'input-coupon-'+idx" v-model="item.value" type="text" placeholder="버튼 타입" required></b-form-input>
+          </b-form-group>
+          <b-form-group class="content-value" :id="'input-group-quiz-'+idx" label="퀴즈 정답" :label-for="'input-quiz-'+idx" v-if="item.type == 'quiz'">
+            <b-form-input :id="'input-quiz-'+idx" v-model="item.value" type="text" placeholder="퀴즈 정답" required></b-form-input>
+          </b-form-group>
+          <b-form-group class="content-value" :id="'input-group-rndnum1-'+idx" label="중복 참여 여부" :label-for="'input-rndnum1-'+idx" v-if="item.type == 'rndnum1'">
+            <b-form-radio-group :id="'radios-rndnum1-'+idx" v-model="item.value">
+              <b-form-radio value="Y">가능</b-form-radio>
+              <b-form-radio value="N">불가능</b-form-radio>
+            </b-form-radio-group>
+          </b-form-group>
+          <b-form-group :id="'input-group-image-'+idx" label="이미지" :label-for="'file-content-image-'+idx">
             <b-form-file
-                id="file-content-image"
-                v-model="content.image"
-                :state="content.image"
+                :id="'file-content-image-'+idx"
+                v-model="item.image"
+                :state="item.image"
                 placeholder="Choose a file or drop it here..."
                 drop-placeholder="Drop file here..."
             ></b-form-file>
-            <div class="mt-3">Selected file: {{ form.contents[idx].image ? form.contents[idx].image : '' }}</div>
           </b-form-group>
-        </b-form-group>
+          <div>Selected file: {{ item.image ? item.image : '' }}</div>
+        </div>
         <b-form-group id="input-group-8" label="・ 유의사항" >
           <b-form-textarea v-model="form.notice"></b-form-textarea>
         </b-form-group>
@@ -103,12 +122,13 @@ export default {
     return {
       selectContent : '',
       selectOptions:[
-        { value: null, text: 'Please select some item' , disabled: true },
-        { eventType:'G', contentType: '', text: '이미지' , disabled: true },
-        { eventType:'G', contentType: 'link', text: '링크 연결', disabled: true  },
-        { eventType:'P', contentType: 'coupon', text: '쿠폰 다운로드', disabled: true  },
-        { eventType:'Q', contentType: 'quiz', text: '퀴즈 정답 입력', disabled: true },
-        { eventType:'R', contentType: 'rndnum', text: '난수번호 입력', disabled: true }
+        { value: '', text: '이벤트 내용을 선택해 주세요.' , disabled: true },
+        { eventType:'', value: 'image', text: '이미지' , disabled: false },
+        { eventType:'G', value: 'link', text: '링크 연결', disabled: true  },
+        { eventType:'P', value: 'coupon', text: '쿠폰 다운로드 버튼', disabled: true  },
+        { eventType:'P', value: 'quiz', text: '퀴즈 정답 입력', disabled: true },
+        { eventType:'R', value: 'rndnum1', text: '난수번호 입력', disabled: true },
+        { eventType:'R', value: 'rndnum2', text: '난수번호 발급', disabled: true }
       ],
       form: {
         displayYn: 'N',
@@ -143,22 +163,25 @@ export default {
         this.show = true
       })
     },
-    // addEventContent(){
-    //   var value = {
-    //     link : {image:'',link:''},
-    //     coupon : {image:'', type:''},
-    //     quiz : {image:'',value:'', type: ''},
-    //     rndnum : {image:''}
-    //   }
-    //
-    //   var type = this.selectContent;
-    //
-    //   this.form.contents.push(value.type)
-    //
-    // },
+
+    addEventContent(){
+
+      var contentObj = {
+        type : '',
+        image : null,
+        value : null
+      }
+      if(this.selectContent != '' ) {
+        contentObj.type = this.selectContent
+        this.form.contents.push(contentObj)
+      }
+    },
+
     rangeContents(){
       this.selectOptions.forEach(e => {
-        if(this.form.eventType.includes(e.eventType)){
+        if(e.value == 'image'){
+          e.disabled = false
+        } else if(this.form.eventType.includes(e.eventType)){
           e.disabled = false
         } else {
           e.disabled = true
@@ -182,5 +205,21 @@ export default {
 }
 .custom-select{
   width: 50% !important;
+}
+.contents-list{
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+  border: 1px solid #eee;
+  padding: 1rem;
+}
+.contents-list h5{
+  margin-bottom: 1rem;
+}
+.contents-list .form-group{
+  border:none;
+  padding-bottom: 0;
+}
+.content-value{
+  margin-top: 1rem;
 }
 </style>
